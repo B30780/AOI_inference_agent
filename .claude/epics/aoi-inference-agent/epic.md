@@ -1,4 +1,4 @@
-﻿---
+---
 name: aoi-inference-agent
 status: backlog
 created: 2026-02-25T02:26:02Z

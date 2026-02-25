@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{{config.get('title', 'Flasgger')}}</title>
+  <link rel="stylesheet" type="text/css" href="https://unpkg.com/swagger-ui-dist@5.9.0/swagger-ui.css" >
+  <link rel="icon" type="image/png" href="https://unpkg.com/swagger-ui-dist@5.9.0/favicon-32x32.png" sizes="32x32" />
+  <link rel="icon" type="image/png" href="https://unpkg.com/swagger-ui-dist@5.9.0/favicon-16x16.png" sizes="16x16" />
+  <style>
+    html {
+      box-sizing: border-box;
+      overflow: -moz-scrollbars-vertical;
+      overflow-y: scroll;
+    }
+    *,
+    *:before,
+    *:after {
+      box-sizing: inherit;
+    }
+    body {
+      margin:0;
+      padding:0;
+    }
+    /* 自定义样式：强制文件输入支持多选 */
+    input[type="file"][name="images"] {
+      pointer-events: auto !important;
+    }
+  </style>
+</head>
+<body>
+  <div id="swagger-ui"></div>
+  
+  <script src="https://unpkg.com/swagger-ui-dist@5.9.0/swagger-ui-bundle.js" charset="UTF-8"> </script>
+  <script src="https://unpkg.com/swagger-ui-dist@5.9.0/swagger-ui-standalone-preset.js" charset="UTF-8"> </script>
+  <script>
+    window.onload = function() {
+      const ui = SwaggerUIBundle({
+        url: "/apispec.json",
+        dom_id: '#swagger-ui',
+        deepLinking: true,
+        presets: [
+          SwaggerUIBundle.presets.apis,
+          SwaggerUIStandalonePreset
+        ],
+        plugins: [
+          SwaggerUIBundle.plugins.DownloadUrl
+        ],
+        layout: "StandaloneLayout",
+        validatorUrl: null,
+        docExpansion: "list",
+        defaultModelsExpandDepth: 3,
+        requestInterceptor: (request) => {
+          return request;
+        },
+        responseInterceptor: (response) => {
+          return response;
+        }
+      });
+      
+      window.ui = ui;
+      
+      // 延迟执行，确保 DOM 已渲染
+      setTimeout(() => {
+        // 为批次上传的文件输入添加 multiple 属性
+        const observer = new MutationObserver((mutations) => {
+          document.querySelectorAll('input[type="file"][name="images"]').forEach(input => {
+            if (!input.hasAttribute('multiple')) {
+              input.setAttribute('multiple', 'multiple');
+              console.log('✓ 已为批次上传启用多文件选择');
+            }
+          });
+        });
+        
+        // 观察 DOM 变化
+        observer.observe(document.body, {
+          childList: true,
+          subtree: true
+        });
+        
+        // 立即执行一次
+        document.querySelectorAll('input[type="file"][name="images"]').forEach(input => {
+          input.setAttribute('multiple', 'multiple');
+        });
+      }, 1000);
+    };
+  </script>
+</body>
+</html>

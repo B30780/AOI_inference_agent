@@ -1,0 +1,172 @@
+{
+  "image_shape": {
+    "height": 1792,
+    "width": 1792
+  },
+  "classes": {
+    "1_PI_Particle": {
+      "class_id": 1,
+      "total_regions": 5,
+      "total_area_pixels": 213,
+      "regions": [
+        {
+          "region_id": 1,
+          "centroid": {
+            "x": 1655.904761904762,
+            "y": 1508.0
+          },
+          "bounding_box": {
+            "x": 1653,
+            "y": 1506,
+            "width": 7,
+            "height": 5
+          },
+          "area_pixels": 14,
+          "perimeter": 15.313708305358887,
+          "major_axis": 5.750073432922363,
+          "minor_axis": 3.9162988662719727,
+          "circularity": 0.750200171090617,
+          "aspect_ratio": 1.4682417326326294
+        },
+        {
+          "region_id": 2,
+          "centroid": {
+            "x": 1679.5074626865671,
+            "y": 1511.365671641791
+          },
+          "bounding_box": {
+            "x": 1674,
+            "y": 1506,
+            "width": 12,
+            "height": 12
+          },
+          "area_pixels": 114,
+          "perimeter": 40.485281229019165,
+          "major_axis": 13.842240333557129,
+          "minor_axis": 12.72724723815918,
+          "circularity": 0.8740180355817377,
+          "aspect_ratio": 1.0876067758041932
+        },
+        {
+          "region_id": 3,
+          "centroid": {
+            "x": 1710.5714285714287,
+            "y": 1507.857142857143
+          },
+          "bounding_box": {
+            "x": 1702,
+            "y": 1506,
+            "width": 19,
+            "height": 5
+          },
+          "area_pixels": 58,
+          "perimeter": 39.31370830535889,
+          "major_axis": 18.6237850189209,
+          "minor_axis": 5.100595474243164,
+          "circularity": 0.47157398162293573,
+          "aspect_ratio": 3.6512962286397217
+        },
+        {
+          "region_id": 4,
+          "centroid": {
+            "x": 976.0,
+            "y": 1669.0
+          },
+          "bounding_box": {
+            "x": 976,
+            "y": 1669,
+            "width": 1,
+            "height": 1
+          },
+          "area_pixels": 0,
+          "perimeter": 0.0,
+          "major_axis": 1.0,
+          "minor_axis": 1.0,
+          "circularity": 0.0,
+          "aspect_ratio": 1.0
+        },
+        {
+          "region_id": 5,
+          "centroid": {
+            "x": 969.8947368421053,
+            "y": 1682.7368421052631
+          },
+          "bounding_box": {
+            "x": 966,
+            "y": 1680,
+            "width": 10,
+            "height": 7
+          },
+          "area_pixels": 27,
+          "perimeter": 23.55634880065918,
+          "major_axis": 8.439270973205566,
+          "minor_axis": 5.43703556060791,
+          "circularity": 0.622768453566985,
+          "aspect_ratio": 1.5521824124803
+        }
+      ]
+    },
+    "2_PR_Peeling": {
+      "class_id": 2,
+      "total_regions": 1,
+      "total_area_pixels": 649,
+      "regions": [
+        {
+          "region_id": 1,
+          "centroid": {
+            "x": 1773.5097765363128,
+            "y": 738.4441340782123
+          },
+          "bounding_box": {
+            "x": 1753,
+            "y": 706,
+            "width": 39,
+            "height": 61
+          },
+          "area_pixels": 649,
+          "perimeter": 157.92388093471527,
+          "major_axis": 66.02536010742188,
+          "minor_axis": 14.265690803527832,
+          "circularity": 0.32726035954525895,
+          "aspect_ratio": 4.628262382575553
+        }
+      ]
+    },
+    "3_Copper_Nodule": {
+      "class_id": 3,
+      "total_regions": 1,
+      "total_area_pixels": 4,
+      "regions": [
+        {
+          "region_id": 1,
+          "centroid": {
+            "x": 1138.090909090909,
+            "y": 717.3636363636364
+          },
+          "bounding_box": {
+            "x": 1136,
+            "y": 716,
+            "width": 6,
+            "height": 4
+          },
+          "area_pixels": 4,
+          "perimeter": 13.071067690849304,
+          "major_axis": 5.962521076202393,
+          "minor_axis": 2.891087293624878,
+          "circularity": 0.3309788558529266,
+          "aspect_ratio": 2.0623801603467036
+        }
+      ]
+    },
+    "4_Env_Particle": {
+      "class_id": 4,
+      "total_regions": 0,
+      "total_area_pixels": 0,
+      "regions": []
+    }
+  },
+  "performance": {
+    "processing_time_seconds": 0.6743,
+    "timestamp": "2026-02-24 17:38:20"
+  }
+}

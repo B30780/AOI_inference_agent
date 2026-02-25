@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FANOUT Shuttle Service AOI 影像辨識系統</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="icon" href="{{ url_for('static', filename='ico/ITRI128.ico') }}" type="image/x-icon">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='ico/ITRI128.ico') }}" type="image/x-icon">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- 標題區域 -->
+        <header class="header">
+            <div class="header-logo">
+                <img src="{{ url_for('static', filename='ico/ITRI128.ico') }}" alt="ITRI Logo" class="itri-logo">
+            </div>
+            <h1><i class="fas fa-microscope"></i> FANOUT Shuttle Service AOI 影像辨識系統</h1>
+            <p class="subtitle">基於 OneFormer 的自動光學檢測系統</p>
+        </header>
+
+        <!-- 系統狀態卡片 -->
+        <div class="system-status" id="systemStatus">
+            <h3><i class="fas fa-info-circle"></i> 系統狀態</h3>
+            <div class="status-grid">
+                <div class="status-item">
+                    <span class="status-label">模型狀態</span>
+                    <span class="status-value" id="modelStatus">
+                        <span class="status-indicator" id="modelIndicator"></span>
+                        檢查中...
+                    </span>
+                </div>
+                <div class="status-item">
+                    <span class="status-label">運算設備</span>
+                    <span class="status-value" id="deviceStatus">檢查中...</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-label">支援格式</span>
+                    <span class="status-value">JPG, PNG, BMP, TIFF</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-label">最大檔案</span>
+                    <span class="status-value">50 MB</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 功能說明 -->
+        <div class="description-box">
+            <p>
+                <i class="fas fa-upload"></i> 上傳 PCB 或半導體影像，系統將自動進行瑕疵檢測與分類<br>
+                <small>支援檢測類別：PI Particle、PR Peeling、Copper Nodule、Env Particle</small>
+            </p>
+        </div>
+
+        <!-- 上傳區域 -->
+        <div class="upload-section">
+            <!-- 模式切換按鈕 -->
+            <div class="mode-switch">
+                <button class="mode-btn active" onclick="switchMode('single')" id="singleModeBtn">
+                    <i class="fas fa-image"></i> 單張檢測
+                </button>
+                <button class="mode-btn" onclick="switchMode('batch')" id="batchModeBtn">
+                    <i class="fas fa-images"></i> 批次檢測
+                </button>
+            </div>
+            
+            <!-- 單張上傳區域 -->
+            <div class="upload-area" id="uploadArea">
+                <div class="upload-icon">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                </div>
+                <p class="upload-text">點擊選擇文件或拖拽影像到此處</p>
+                <p class="upload-hint">支援 JPG, PNG, BMP, TIFF 格式，最大 50MB</p>
+                <input type="file" id="imageInput" accept="image/*" />
+            </div>
+            
+            <!-- 批次上傳區域 -->
+            <div class="upload-area" id="batchUploadArea" style="display: none;">
+                <div class="upload-icon">
+                    <i class="fas fa-images"></i>
+                </div>
+                <p class="upload-text">選擇多張影像進行批次檢測</p>
+                <p class="upload-hint">支援 JPG, PNG, BMP, TIFF 格式，每個文件最大 50MB</p>
+                <input type="file" id="batchImageInput" accept="image/*" multiple />
+                <div class="file-list" id="fileList"></div>
+            </div>
+            
+            <div class="button-group">
+                <button onclick="analyzeImage()" type="button" class="btn btn-primary" id="analyzeBtn">
+                    <i class="fas fa-search"></i> 開始分析
+                </button>
+                <button onclick="clearResults()" type="button" class="btn btn-secondary" id="clearBtn">
+                    <i class="fas fa-times"></i> 清除結果
+                </button>
+            </div>
+        </div>
+
+        <!-- 載入狀態 -->
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>⏳ 正在處理影像，請稍候...</p>
+            <p class="loading-detail" id="loadingDetail">初始化...</p>
+        </div>
+
+        <!-- 狀態訊息 -->
+        <div class="status-message" id="statusMessage"></div>
+
+        <!-- 結果顯示區域 -->
+        <div class="results" id="results">
+            <h2><i class="fas fa-chart-bar"></i> 分析結果</h2>
+            
+            <!-- 統計資訊卡片 -->
+            <div class="stats-cards">
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: #ff6b6b;">
+                        <i class="fas fa-bug"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-label">檢測瑕疵總數</div>
+                        <div class="stat-value" id="totalDefects">0</div>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: #4ecdc4;">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-label">處理時間</div>
+                        <div class="stat-value" id="processingTime">0 秒</div>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: #45b7d1;">
+                        <i class="fas fa-image"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-label">影像尺寸</div>
+                        <div class="stat-value" id="imageSize">-</div>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: #f7b731;">
+                        <i class="fas fa-calendar"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-label">分析時間</div>
+                        <div class="stat-value" id="analysisTime">-</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 瑕疵分類統計 -->
+            <div class="defect-summary" id="defectSummary">
+                <h3><i class="fas fa-list-ul"></i> 瑕疵分類統計</h3>
+                <div class="defect-list" id="defectList">
+                    <!-- 動態生成 -->
+                </div>
+            </div>
+
+            <!-- 影像結果展示 -->
+            <div class="result-images">
+                <h3><i class="fas fa-images"></i> 視覺化結果</h3>
+                
+                <div class="image-tabs">
+                    <button class="tab-btn active" onclick="switchTab('original')">
+                        <i class="fas fa-image"></i> 原始影像
+                    </button>
+                    <button class="tab-btn" onclick="switchTab('combined')">
+                        <i class="fas fa-th"></i> 對比視圖
+                    </button>
+                    <button class="tab-btn" onclick="switchTab('overlay')">
+                        <i class="fas fa-layer-group"></i> 標註視圖
+                    </button>
+                    <button class="tab-btn" onclick="switchTab('mask')">
+                        <i class="fas fa-palette"></i> 遮罩視圖
+                    </button>
+                </div>
+
+                <div class="image-display">
+                    <!-- 原始影像標籤 -->
+                    <div class="tab-content active" id="original-tab">
+                        <div class="image-viewer-container">
+                            <div class="image-controls">
+                                <button onclick="zoomIn('original')" class="zoom-btn" title="放大">
+                                    <i class="fas fa-search-plus"></i>
+                                </button>
+                                <button onclick="zoomOut('original')" class="zoom-btn" title="縮小">
+                                    <i class="fas fa-search-minus"></i>
+                                </button>
+                                <button onclick="resetZoom('original')" class="zoom-btn" title="重置">
+                                    <i class="fas fa-sync-alt"></i>
+                                </button>
+                                <span class="zoom-level" id="originalZoomLevel">100%</span>
+                                <button onclick="toggleGrayscale('original')" class="zoom-btn" id="originalGrayscaleBtn" title="灰階模式">
+                                    <i class="fas fa-adjust"></i>
+                                </button>
+                            </div>
+                            <div class="image-wrapper" id="originalWrapper">
+                                <img id="originalImg" alt="原始影像" />
+                                <div class="coordinate-display" id="originalCoordinateDisplay">
+                                    X: -, Y: - | 灰階: -
+                                </div>
+                            </div>
+                        </div>
+                        <p class="image-caption">原始 AOI 影像 | 支援放大/縮小檢視與灰階模式</p>
+                    </div>
+
+                    <!-- 對比視圖標籤 -->
+                    <div class="tab-content" id="combined-tab">
+                        <div class="image-viewer-container">
+                            <div class="image-controls">
+                                <button onclick="zoomIn('combined')" class="zoom-btn" title="放大">
+                                    <i class="fas fa-search-plus"></i>
+                                </button>
+                                <button onclick="zoomOut('combined')" class="zoom-btn" title="縮小">
+                                    <i class="fas fa-search-minus"></i>
+                                </button>
+                                <button onclick="resetZoom('combined')" class="zoom-btn" title="重置">
+                                    <i class="fas fa-sync-alt"></i>
+                                </button>
+                                <span class="zoom-level" id="combinedZoomLevel">100%</span>
+                            </div>
+                            <div class="image-wrapper" id="combinedWrapper">
+                                <img id="combinedImg" alt="對比視圖" />
+                            </div>
+                        </div>
+                        <p class="image-caption">左：原始影像 | 右：瑕疵標註</p>
+                    </div>
+
+                    <!-- 標註視圖標籤 -->
+                    <div class="tab-content" id="overlay-tab">
+                        <img id="overlayImg" alt="標註視圖" />
+                        <p class="image-caption">瑕疵輪廓標註與類別統計</p>
+                    </div>
+
+                    <!-- 遮罩視圖標籤 -->
+                    <div class="tab-content" id="mask-tab">
+                        <img id="maskImg" alt="遮罩視圖" />
+                        <p class="image-caption">不同顏色代表不同瑕疵類別</p>
+                    </div>
+                </div>
+
+                <div class="download-buttons">
+                    <button onclick="downloadImage('combined')" class="btn btn-download">
+                        <i class="fas fa-download"></i> 下載對比圖
+                    </button>
+                    <button onclick="downloadImage('overlay')" class="btn btn-download">
+                        <i class="fas fa-download"></i> 下載標註圖
+                    </button>
+                    <button onclick="downloadJSON()" class="btn btn-download">
+                        <i class="fas fa-file-code"></i> 下載分析報告 (JSON)
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- LLM 助手區域 (預留) -->
+        <div class="llm-section" id="llmSection">
+            <h2><i class="fas fa-robot"></i> AI 智能助手 <span class="badge">即將推出</span></h2>
+            <div class="llm-container">
+                <div class="llm-info">
+                    <p><i class="fas fa-info-circle"></i> LLM 功能正在開發中，未來將提供：</p>
+                    <ul>
+                        <li>瑕疵分析智能問答</li>
+                        <li>檢測結果解釋說明</li>
+                        <li>改善建議與對策</li>
+                        <li>歷史數據分析</li>
+                    </ul>
+                </div>
+                <div class="llm-placeholder">
+                    <i class="fas fa-cog fa-spin"></i>
+                    <p>功能開發中...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 頁腳 -->
+        <footer class="footer">
+            <div class="footer-content">
+                <p>
+                    <strong>FANOUT Shuttle Service AOI 影像辨識系統</strong> | 
+                    基於 OneFormer 深度學習模型 | {{ current_year }}
+                </p>
+                <p>
+                    <a href="/health" target="_blank"><i class="fas fa-heartbeat"></i> 系統健康檢查</a> | 
+                    <a href="/api/status" target="_blank"><i class="fas fa-info"></i> API 狀態</a> | 
+                    <a href="/docs" target="_blank"><i class="fas fa-book"></i> API 文件</a> | 
+                    <a href="/batch-test" target="_blank"><i class="fas fa-vial"></i> 批次測試</a> | 
+                    <a href="mailto:support@itri.org.tw"><i class="fas fa-envelope"></i> 技術支援</a>
+                </p>
+                <p class="footer-note">
+                    <img src="{{ url_for('static', filename='ico/ITRI128.ico') }}" alt="ITRI" class="footer-logo">
+                    <small>ITRI EOSL Rachel A30335 | Powered by Flask & OneFormer</small>
+                </p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- 引入 JavaScript -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
