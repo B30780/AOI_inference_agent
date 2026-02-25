@@ -1,0 +1,25 @@
+# FastAPI and Web Server
+fastapi==0.109.0
+uvicorn[standard]==0.27.0
+python-multipart==0.0.7
+
+# Database
+sqlalchemy==2.0.25
+alembic==1.13.1
+psycopg2-binary==2.9.9
+
+# HTTP Client
+httpx==0.26.0
+
+# Image Processing
+Pillow==10.2.0
+
+# Configuration
+python-dotenv==1.0.1
+
+# Data Validation
+pydantic==2.5.3
+pydantic-settings==2.1.0
+
+# Utilities
+python-dateutil==2.8.2
