@@ -1,10 +1,10 @@
----
+﻿---
 name: aoi-inference-agent
 status: backlog
 created: 2026-02-25T02:26:02Z
 progress: 0%
 prd: .claude/prds/aoi-inference-agent.md
-github: [Will be updated when synced to GitHub]
+github: https://github.com/B30780/AOI_inference_agent/issues/1
 ---
 
 # Epic: AOI Inference Agent
@@ -78,23 +78,23 @@ Build a FastAPI-based middleware service that orchestrates AOI (Automated Optica
 #### 1. FastAPI Application Structure
 ```
 app/
-├── main.py              # FastAPI app initialization, middleware, startup/shutdown
-├── config.py            # Configuration from environment variables
-├── api/                 # Route handlers
-│   ├── upload.py        # POST /upload, POST /upload/batch
-│   ├── query.py         # GET /images, GET /images/{id}, GET /images/{id}/classes, GET /images/{id}/regions
-│   ├── download.py      # GET /download/image, GET /download/batch, GET /download/json
-│   └── health.py        # GET /health, GET /stats
-├── models/
-│   ├── database.py      # SQLAlchemy models (Image, Class, Region)
-│   └── schemas.py       # Pydantic request/response models
-├── services/
-│   ├── segformer_client.py  # HTTP client for external SegFormer service
-│   ├── storage.py           # File storage operations
-│   └── db_service.py        # Database operations (CRUD)
-└── utils/
-    ├── validators.py    # File validation (type, size)
-    └── helpers.py       # UUID generation, timestamp formatting
+??? main.py              # FastAPI app initialization, middleware, startup/shutdown
+??? config.py            # Configuration from environment variables
+??? api/                 # Route handlers
+??  ??? upload.py        # POST /upload, POST /upload/batch
+??  ??? query.py         # GET /images, GET /images/{id}, GET /images/{id}/classes, GET /images/{id}/regions
+??  ??? download.py      # GET /download/image, GET /download/batch, GET /download/json
+??  ??? health.py        # GET /health, GET /stats
+??? models/
+??  ??? database.py      # SQLAlchemy models (Image, Class, Region)
+??  ??? schemas.py       # Pydantic request/response models
+??? services/
+??  ??? segformer_client.py  # HTTP client for external SegFormer service
+??  ??? storage.py           # File storage operations
+??  ??? db_service.py        # Database operations (CRUD)
+??? utils/
+    ??? validators.py    # File validation (type, size)
+    ??? helpers.py       # UUID generation, timestamp formatting
 ```
 
 #### 2. Database Models (SQLAlchemy)
@@ -260,7 +260,7 @@ Foreign keys with CASCADE delete to maintain referential integrity.
 
 **Integration Tests**
 - API endpoints with test database
-- Full upload → store → retrieve flow
+- Full upload ??store ??retrieve flow
 - Batch upload scenarios
 - Error cases and edge conditions
 
@@ -272,7 +272,7 @@ Foreign keys with CASCADE delete to maintain referential integrity.
 
 ## Task Breakdown Preview
 
-High-level implementation tasks (target: ≤10 tasks):
+High-level implementation tasks (target: ??0 tasks):
 
 - [ ] **Task 1: Project Setup and Database Foundation**
   - Initialize FastAPI project structure
@@ -416,22 +416,27 @@ High-level implementation tasks (target: ≤10 tasks):
 
 ## Tasks Created
 
-The following detailed task files have been created for this epic:
+The following tasks have been synced to GitHub as sub-issues:
 
-1. [001: Project Setup and Database Foundation](001.md) - Foundation task (L, 12-16h)
-2. [002: External Service Integration](002.md) - SegFormer client (M, 8-10h)
-3. [003: File Storage Service](003.md) - Storage management (M, 6-8h)
-4. [004: Upload API Endpoints](004.md) - Upload endpoints (L, 12-16h)
-5. [005: Query API Endpoints](005.md) - Query endpoints (M, 8-10h)
-6. [006: Download API Endpoints](006.md) - Download endpoints (M, 6-8h)
-7. [007: Swagger UI Integration](007.md) - API documentation (S, 4-6h)
-8. [008: Web UI Implementation](008.md) - Frontend interface (M, 10-12h)
-9. [009: Testing Suite](009.md) - Comprehensive testing (L, 12-16h)
-10. [010: Documentation and Deployment](010.md) - Final documentation (M, 8-10h)
+- [ ] [#2 - Project Setup and Database Foundation](https://github.com/B30780/AOI_inference_agent/issues/2) (L, 12-16h, sequential)
+- [ ] [#3 - External Service Integration](https://github.com/B30780/AOI_inference_agent/issues/3) (M, 8-10h, sequential)
+- [ ] [#4 - File Storage Service](https://github.com/B30780/AOI_inference_agent/issues/4) (M, 6-8h, parallel)
+- [ ] [#5 - Upload API Endpoints](https://github.com/B30780/AOI_inference_agent/issues/5) (L, 12-16h, sequential)
+- [ ] [#6 - Query API Endpoints](https://github.com/B30780/AOI_inference_agent/issues/6) (M, 8-10h, parallel)
+- [ ] [#7 - Download API Endpoints](https://github.com/B30780/AOI_inference_agent/issues/7) (M, 6-8h, parallel)
+- [ ] [#8 - Swagger UI Integration](https://github.com/B30780/AOI_inference_agent/issues/8) (S, 4-6h, sequential)
+- [ ] [#9 - Web UI Implementation](https://github.com/B30780/AOI_inference_agent/issues/9) (M, 10-12h, parallel)
+- [ ] [#10 - Testing Suite](https://github.com/B30780/AOI_inference_agent/issues/10) (L, 12-16h, sequential)
+- [ ] [#11 - Documentation and Deployment](https://github.com/B30780/AOI_inference_agent/issues/11) (M, 8-10h, sequential)
 
-**Total Estimated Hours:** 86-112 hours (approximately 2-3 weeks for 1 developer)
+**Summary:**
+- Total tasks: 10
+- Parallel tasks: 4 (can be worked on simultaneously after dependencies met)
+- Sequential tasks: 6 (have blocking dependencies)
+- Total estimated effort: 86-112 hours (approximately 2-3 weeks for 1 developer)
 
 **Parallelization Opportunities:**
-- Tasks 002 and 003 can be developed in parallel (both depend only on 001)
-- Tasks 005 and 006 can be developed in parallel (both depend on 001, 004)
-- Task 008 can be developed in parallel with Tasks 005-006
+- Tasks #3 and #4 can be developed in parallel (both depend only on #2)
+- Tasks #6 and #7 can be developed in parallel (both depend on #2, #5)
+- Task #9 can be developed in parallel with Tasks #6-#7
+
