@@ -12,34 +12,8 @@ from typing import Dict, BinaryIO, Optional
 from fastapi import UploadFile
 
 from app.config import settings
-
-# Temporary placeholders for utils (Stream B is implementing these in parallel)
-# These will be replaced with proper imports once Stream B completes
-try:
-    from app.utils.validators import validate_file_type, validate_file_size
-    from app.utils.helpers import generate_unique_id, get_timestamp
-except ImportError:
-    # Temporary fallback implementations until Stream B completes
-    import uuid
-    
-    def validate_file_type(filename: str) -> None:
-        """Temporary placeholder - validates file extension"""
-        ext = Path(filename).suffix.lower()
-        if ext not in settings.allowed_extensions:
-            raise ValueError(f"File type {ext} not allowed. Allowed types: {settings.allowed_extensions}")
-    
-    def validate_file_size(file: BinaryIO, max_size: int) -> None:
-        """Temporary placeholder - validates file size"""
-        # This is a simplified version; Stream B will implement proper validation
-        pass
-    
-    def generate_unique_id() -> str:
-        """Temporary placeholder - generates UUID"""
-        return str(uuid.uuid4())[:8]
-    
-    def get_timestamp() -> str:
-        """Temporary placeholder - gets formatted timestamp"""
-        return datetime.now().strftime("%Y%m%d_%H%M%S")
+from app.utils.validators import validate_file_type, validate_file_size
+from app.utils.helpers import generate_unique_id, get_timestamp
 
 
 class StorageService:
